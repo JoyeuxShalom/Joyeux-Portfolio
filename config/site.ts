@@ -13,7 +13,7 @@ export const site = {
   location: "Kigali, Rwanda",
 
   /** Your deployed domain, e.g. "https://joyeuxshalom.com". Used for social previews. */
-  url: "",
+  url: "https://joyeux-shalom.netlify.app",
 
   email: "shalomjoyeux520@gmail.com",
 
