@@ -1,0 +1,236 @@
+@import "tailwindcss";
+
+/*
+ * Theme tokens. Names describe roles, not literal colors:
+ *   ink = page background, coal/graphite = raised surfaces,
+ *   paper = primary text, mist = secondary text,
+ *   signal = AI / data accent, ember = hardware / highlight accent.
+ * Dark is the default; light swaps the values, so every utility
+ * (bg-ink, text-paper/80, stroke-signal…) follows the active theme.
+ */
+:root {
+  --ink: #08090b;
+  --coal: #111318;
+  --graphite: #1a1d24;
+  --mist: #a4aab5;
+  --paper: #f4f5f7;
+  --signal: #63e6ff;
+  --ember: #ff6a35;
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  --ink: #f4f5f7;
+  --coal: #e9ebef;
+  --graphite: #dcdfe5;
+  --mist: #565d69;
+  --paper: #0d0f13;
+  --signal: #0a7e9c;
+  --ember: #d2491a;
+  color-scheme: light;
+}
+
+/* Without JavaScript, follow the system preference. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    --ink: #f4f5f7;
+    --coal: #e9ebef;
+    --graphite: #dcdfe5;
+    --mist: #565d69;
+    --paper: #0d0f13;
+    --signal: #0a7e9c;
+    --ember: #d2491a;
+    color-scheme: light;
+  }
+}
+
+/* `dark:` and `light:` variants follow the data-theme attribute, not the OS. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+@custom-variant light (&:where([data-theme="light"], [data-theme="light"] *));
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-coal: var(--coal);
+  --color-graphite: var(--graphite);
+  --color-mist: var(--mist);
+  --color-paper: var(--paper);
+  --color-signal: var(--signal);
+  --color-ember: var(--ember);
+}
+
+@theme {
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", monospace;
+
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  html {
+    background: var(--color-ink);
+    color: var(--color-paper);
+    -webkit-text-size-adjust: 100%;
+    transition: background-color 0.4s ease;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    min-height: 100svh;
+    background: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--color-signal) 35%, transparent);
+    color: var(--color-paper);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-signal);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+}
+
+/* Film grain: one fixed layer, very low opacity, never intercepts input. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+/* On light backgrounds the grain must be dark to be visible. */
+:root[data-theme="light"] body::after {
+  filter: invert(1);
+  opacity: 0.035;
+}
+
+@utility container-x {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: 1rem;
+  @media (width >= 40rem) {
+    padding-inline: 2rem;
+  }
+  @media (width >= 64rem) {
+    padding-inline: 3rem;
+  }
+}
+
+/* Small technical metadata labels. */
+@utility label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  line-height: 1.4;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-mist);
+}
+
+@utility hairline {
+  border-color: color-mix(in oklab, var(--paper) 10%, transparent);
+}
+
+/* Masked line used by text reveals: the inner span slides up into view. */
+@utility mask-line {
+  display: block;
+  overflow: hidden;
+  /* Room for descenders (g, p, y) under tight leading. */
+  padding-bottom: 0.16em;
+  margin-bottom: -0.16em;
+}
+
+/* Corner brackets used to frame media like a viewfinder. */
+@utility viewfinder {
+  position: relative;
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    pointer-events: none;
+    z-index: 3;
+  }
+  &::before {
+    top: -1px;
+    left: -1px;
+    border-top: 1px solid color-mix(in oklab, var(--paper) 55%, transparent);
+    border-left: 1px solid color-mix(in oklab, var(--paper) 55%, transparent);
+  }
+  &::after {
+    right: -1px;
+    bottom: -1px;
+    border-right: 1px solid color-mix(in oklab, var(--paper) 55%, transparent);
+    border-bottom: 1px solid color-mix(in oklab, var(--paper) 55%, transparent);
+  }
+}
+
+@keyframes ping-soft {
+  0% {
+    transform: scale(1);
+    opacity: 0.65;
+  }
+  80%,
+  100% {
+    transform: scale(3.2);
+    opacity: 0;
+  }
+}
+
+@keyframes scroll-cue {
+  0% {
+    transform: translateY(-100%);
+  }
+  60%,
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.2;
+  }
+}
+
+.animate-ping-soft {
+  animation: ping-soft 2.8s var(--ease-expo) infinite;
+}
+.animate-scroll-cue {
+  animation: scroll-cue 2.2s var(--ease-expo) infinite;
+}
+.animate-blink {
+  animation: blink 1.6s steps(2, start) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
