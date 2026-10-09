@@ -16,6 +16,7 @@ export function InViewVideo({
   label,
   className,
   fallback,
+  paused = false,
 }: {
   src: string;
   poster?: string;
@@ -23,6 +24,8 @@ export function InViewVideo({
   label: string;
   className?: string;
   fallback?: React.ReactNode;
+  /** Keep paused even when visible (e.g. a hidden scene in the pinned showcase). */
+  paused?: boolean;
 }) {
   const wrap = useRef<HTMLDivElement>(null);
   const video = useRef<HTMLVideoElement>(null);
@@ -34,9 +37,9 @@ export function InViewVideo({
   useEffect(() => {
     const v = video.current;
     if (!v || reduced) return;
-    if (visible) v.play().catch(() => {});
+    if (visible && !paused) v.play().catch(() => {});
     else v.pause();
-  }, [visible, reduced, near]);
+  }, [visible, reduced, near, paused]);
 
   return (
     <div

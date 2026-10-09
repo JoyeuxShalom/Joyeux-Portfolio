@@ -62,7 +62,7 @@ export function AxonVisual({ progress, active = true, mode }: VisualProps) {
       >
         {/* Bench footage from the real prototype demo. */}
         <div className={cn("viewfinder relative overflow-hidden border border-paper/10", stage ? "h-[60%] self-center rounded-sm" : "")}>
-          {stage ? (
+          {stage && video.mode !== "play" ? (
             <ScrollScrubVideo
               src={video.src}
               poster={video.poster}
@@ -77,7 +77,9 @@ export function AxonVisual({ progress, active = true, mode }: VisualProps) {
               src={video.src}
               poster={video.poster}
               aspect={video.aspect}
-              label="Axon prototype demo: sensors on a breadboard beside the patient mobile app"
+              paused={!active}
+              className={stage ? "h-full" : undefined}
+              label="Axon prototype demo: sensors and patient app, live alerts, and the clinician dashboard"
               fallback={posterFallback}
             />
           )}

@@ -48,8 +48,15 @@ export type Project = {
    * Scroll-scrubbed clip for the homepage showcase.
    * Use the browser URL (/videos/...) not the file path (/public/videos/...).
    * If the file is missing the scene falls back to its designed composition.
+   * mode "scrub" (default) ties playback to scroll; "play" loops it while the
+   * project is on screen, which suits long screen recordings.
    */
-  scrubVideo?: { src: string; poster: string; aspect: number; label: string };
+  scrubVideo?: { src: string; poster: string; aspect: number; label: string; mode?: "scrub" | "play" };
+  /**
+   * Short muted clip shown as a small looping thumbnail on the "Watch the film"
+   * link in the homepage showcase. Leads to the project's first film.
+   */
+  teaser?: { src: string; poster: string; aspect: number; label: string };
   system: { title: string; steps: SystemStep[] };
   overview: string[];
   contributions: string[];
@@ -83,6 +90,12 @@ export const projects: Project[] = [
       poster: "/images/posters/parkshield.jpg",
       aspect: 540 / 1168,
       label: "Prototype node",
+    },
+    teaser: {
+      src: "/videos/parkshield-pitch-teaser.mp4",
+      poster: "/images/posters/parkshield-pitch-teaser.jpg",
+      aspect: 360 / 648,
+      label: "Joyeux pitching ParkShield at CMU Africa",
     },
     system: {
       title: "From detection to response",
@@ -151,6 +164,8 @@ export const projects: Project[] = [
       poster: "/images/posters/axon.jpg",
       aspect: 16 / 9,
       label: "Live prototype demo",
+      // Highlight reel of the full demo: sensors, patient app, alerts, clinician dashboard.
+      mode: "play",
     },
     system: {
       title: "A connected loop",

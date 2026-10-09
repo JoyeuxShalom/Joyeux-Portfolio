@@ -10,6 +10,7 @@ import { cn, pad2 } from "@/lib/utils";
 import { ScrollReveal, SectionLabel } from "@/components/ui/ScrollReveal";
 import { ProjectNavigation } from "./ProjectNavigation";
 import { ProjectVisual } from "./ProjectVisual";
+import { InViewVideo } from "@/components/media/InViewVideo";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 /** Scroll distance per project, in viewport heights. */
@@ -52,12 +53,29 @@ function DetailsLink({ project, tabIndex }: { project: Project; tabIndex?: numbe
         <Link
           href={`/projects/${project.slug}#film`}
           tabIndex={tabIndex}
-          className="group inline-flex items-center gap-2 text-[13px] tracking-[0.06em] text-mist transition-colors hover:text-paper"
+          aria-label={project.teaser ? `Watch the pitch: ${project.films[0].title}` : `Watch the film: ${project.films[0].title}`}
+          className="group inline-flex items-center gap-3 text-[13px] tracking-[0.06em] text-mist transition-colors hover:text-paper"
         >
-          <span className="grid size-6 place-items-center rounded-full border border-paper/20 transition-colors group-hover:border-ember">
-            <Play className="size-2.5 fill-current" />
-          </span>
-          WATCH THE FILM
+          {project.teaser ? (
+            // A few seconds of the real pitch, looping silently, as the button's thumbnail.
+            <span className="relative block w-9 overflow-hidden rounded-[3px] border border-paper/15 transition-colors group-hover:border-ember">
+              <InViewVideo
+                src={project.teaser.src}
+                poster={project.teaser.poster}
+                aspect={project.teaser.aspect}
+                label={project.teaser.label}
+                paused={tabIndex === -1}
+              />
+              <span className="absolute inset-0 grid place-items-center bg-ink/25">
+                <Play className="size-2.5 fill-paper text-paper" />
+              </span>
+            </span>
+          ) : (
+            <span className="grid size-6 place-items-center rounded-full border border-paper/20 transition-colors group-hover:border-ember">
+              <Play className="size-2.5 fill-current" />
+            </span>
+          )}
+          {project.teaser ? "WATCH THE PITCH" : "WATCH THE FILM"}
         </Link>
       )}
     </div>
