@@ -39,13 +39,52 @@ function Photo({
   );
 }
 
+/*
+ * Mosaic cells. Phones: 2 columns at each photo's natural shape.
+ * Wider screens: 6 columns with fixed row height, two rows per block.
+ */
+const SPAN_CLASSES = {
+  wide: "col-span-2 aspect-[16/10] sm:col-span-4 sm:row-span-2 sm:aspect-auto",
+  tall: "col-span-1 aspect-[3/4] sm:col-span-2 sm:row-span-2 sm:aspect-auto",
+  narrow: "col-span-1 aspect-[3/4] sm:col-span-1 sm:row-span-2 sm:aspect-auto",
+} as const;
+
+const SPAN_SIZES = {
+  wide: "(min-width: 1024px) 38vw, 100vw",
+  tall: "(min-width: 1024px) 19vw, 50vw",
+  narrow: "(min-width: 1024px) 10vw, 50vw",
+} as const;
+
 /**
  * Arranges an entry's photos (and optional short loop) into a clean editorial
- * collage. Layout adapts to how many items there are: 1, 2, or 3.
+ * collage. Entries whose photos declare a `span` get a mosaic; otherwise the
+ * layout adapts to how many items there are: 1, 2, or 3.
  */
 export function Collage({ entry }: { entry: LeadershipEntry }) {
   const media = entry.media ?? [];
   const loop = entry.loop;
+
+  if (media.some((m) => m.span)) {
+    return (
+      <div className="grid grid-flow-dense grid-cols-2 gap-3 sm:auto-rows-[clamp(80px,8vw,124px)] sm:grid-cols-6 sm:gap-4">
+        {media.map((m) => {
+          const span = m.span ?? (m.width > m.height ? "wide" : "tall");
+          return (
+            <Photo
+              key={m.src}
+              src={m.src}
+              alt={m.alt}
+              caption={m.caption}
+              width={m.width}
+              height={m.height}
+              sizes={SPAN_SIZES[span]}
+              className={cn(SPAN_CLASSES[span], m.hideOnMobile && "hidden sm:block")}
+            />
+          );
+        })}
+      </div>
+    );
+  }
 
   if (media.length === 1 && !loop) {
     const m = media[0];

@@ -27,9 +27,9 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   };
 }
 
-function Block({ index, title, children }: { index: string; title: string; children: React.ReactNode }) {
+function Block({ index, title, id, children }: { index: string; title: string; id?: string; children: React.ReactNode }) {
   return (
-    <ScrollReveal as="section" className="grid gap-6 border-t hairline py-14 md:grid-cols-12 md:gap-10">
+    <ScrollReveal as="section" id={id} className="grid scroll-mt-20 gap-6 border-t hairline py-14 md:grid-cols-12 md:gap-10">
       <h2 data-reveal className="label md:col-span-4">
         <span className="text-signal">{index}</span> · {title}
       </h2>
@@ -144,7 +144,7 @@ export default async function ProjectPage({ params }: Params) {
           )}
 
           {project.films && project.films.length > 0 && (
-            <Block index={idx()} title="Film">
+            <Block index={idx()} title="Film" id="film">
               <div className="space-y-8">
                 {project.films.map((f) => (
                   <figure key={f.src}>

@@ -3,7 +3,7 @@
 import { useCallback, useRef, useState } from "react";
 import Link from "next/link";
 import { motion, motionValue } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Play } from "lucide-react";
 import type { Project } from "@/data/projects";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { cn, pad2 } from "@/lib/utils";
@@ -37,16 +37,30 @@ function ProjectMeta({ project }: { project: Project }) {
 
 function DetailsLink({ project, tabIndex }: { project: Project; tabIndex?: number }) {
   return (
-    <Link
-      href={`/projects/${project.slug}`}
-      tabIndex={tabIndex}
-      className="group inline-flex items-center gap-2 text-[13px] font-medium tracking-[0.06em] text-paper"
-    >
-      <span className="border-b border-paper/30 pb-0.5 transition-colors group-hover:border-signal group-hover:text-signal">
-        VIEW PROJECT DETAILS
-      </span>
-      <ArrowUpRight className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-    </Link>
+    <div className="flex flex-wrap items-center gap-x-7 gap-y-3">
+      <Link
+        href={`/projects/${project.slug}`}
+        tabIndex={tabIndex}
+        className="group inline-flex items-center gap-2 text-[13px] font-medium tracking-[0.06em] text-paper"
+      >
+        <span className="border-b border-paper/30 pb-0.5 transition-colors group-hover:border-signal group-hover:text-signal">
+          VIEW PROJECT DETAILS
+        </span>
+        <ArrowUpRight className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+      </Link>
+      {project.films && project.films.length > 0 && (
+        <Link
+          href={`/projects/${project.slug}#film`}
+          tabIndex={tabIndex}
+          className="group inline-flex items-center gap-2 text-[13px] tracking-[0.06em] text-mist transition-colors hover:text-paper"
+        >
+          <span className="grid size-6 place-items-center rounded-full border border-paper/20 transition-colors group-hover:border-ember">
+            <Play className="size-2.5 fill-current" />
+          </span>
+          WATCH THE FILM
+        </Link>
+      )}
+    </div>
   );
 }
 

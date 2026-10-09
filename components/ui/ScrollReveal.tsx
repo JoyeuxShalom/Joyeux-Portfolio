@@ -15,9 +15,11 @@ export function ScrollReveal({
   stagger = 0.08,
   y = 28,
   as: Tag = "div",
+  id,
 }: {
   children: React.ReactNode;
   className?: string;
+  id?: string;
   stagger?: number;
   y?: number;
   as?: "div" | "section" | "article" | "header" | "footer" | "ul";
@@ -46,7 +48,7 @@ export function ScrollReveal({
   );
 
   return (
-    <Tag ref={ref as React.Ref<never>} className={cn(className)}>
+    <Tag ref={ref as React.Ref<never>} id={id} className={cn(className)}>
       {children}
     </Tag>
   );

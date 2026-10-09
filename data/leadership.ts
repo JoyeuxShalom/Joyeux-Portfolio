@@ -7,6 +7,12 @@ import type { Media } from "./projects";
  *   "feature" – a full row with a photo collage
  *   "compact" – a text-only card; consecutive compact entries sit side by side
  *
+ * For entries with many photos, give each photo a `span` to build a mosaic
+ * (on wider screens: 6 columns, two rows per block):
+ *   "wide" = 4 columns, "tall" = 2 columns, "narrow" = 1 column.
+ * Arrange each block to add up to 6, e.g. wide + tall, or narrow + narrow + wide.
+ * `hideOnMobile` drops a photo from the 2-column phone layout to keep it even.
+ *
  * `stats` is intentionally empty. Add a figure only once you have verified it,
  * e.g. { value: "4,000+", label: "Fellows selected" }.
  */
@@ -19,7 +25,7 @@ export type LeadershipEntry = {
   summary: string;
   note?: string;
   layout: "feature" | "compact";
-  media?: (Media & { kind?: "image" })[];
+  media?: (Media & { span?: "wide" | "tall" | "narrow"; hideOnMobile?: boolean })[];
   /** Short muted loop shown inside the collage. */
   loop?: { src: string; poster: string; caption: string; width: number; height: number };
   stats?: { value: string; label: string }[];
@@ -32,30 +38,52 @@ export const leadership: LeadershipEntry[] = [
     role: "Global Facilitator",
     period: "Oct 2024 — Present",
     summary:
-      "I have contributed to youth innovation experiences that help teams explore practical solutions to real-world challenges and the UN Sustainable Development Goals, including as a global facilitator at UNLEASH Hack Global.",
+      "I have contributed to youth innovation experiences that help teams explore practical solutions to real-world challenges and the UN Sustainable Development Goals: as a global facilitator at UNLEASH Hack Global, and by running an UNLEASH Hack in partnership with UNDP Rwanda.",
     note: "1st Prize, UNLEASH Hack Rwanda · 2024",
     layout: "feature",
     media: [
+      // Block 1: wide + tall
+      {
+        src: "/images/unleash-first-prize.jpg",
+        alt: "Joyeux with his team and organizers on stage, holding the first winner board at UNLEASH Hack Rwanda",
+        caption: "First prize, UNLEASH Hack Rwanda",
+        width: 2000,
+        height: 1333,
+        span: "wide",
+      },
       {
         src: "/images/unleash-global.jpg",
         alt: "Joyeux standing with four fellow UNLEASH facilitators and organizers in a brick-floored hall",
         caption: "Global facilitator, UNLEASH Hack Global",
         width: 1500,
         height: 2000,
+        span: "tall",
       },
+      // Block 2: narrow + narrow + wide
       {
         src: "/images/unleash-facilitators.jpg",
         alt: "Joyeux with two members of the organizing team, wearing a facilitator badge at UNLEASH Hack Kigali",
-        caption: "Facilitating at UNLEASH Hack Kigali",
+        caption: "UNLEASH Hack Kigali",
         width: 1200,
         height: 1600,
+        span: "narrow",
       },
       {
         src: "/images/unleash-sdg-wall.jpg",
         alt: "Joyeux laughing with a fellow participant in front of a wall of UN Sustainable Development Goal tiles",
-        caption: "In front of the SDG wall",
+        caption: "SDG wall",
         width: 960,
         height: 1280,
+        span: "narrow",
+        hideOnMobile: true,
+      },
+      {
+        src: "/images/unleash-undp-rwanda.jpg",
+        alt: "Joyeux and a co-organizer in UniPod shirts with participants in white hoodies beside UN Sustainable Development Goal cubes",
+        caption: "Running UNLEASH Hack with UNDP Rwanda",
+        width: 1080,
+        height: 810,
+        span: "wide",
       },
     ],
     stats: [],
